@@ -3,5 +3,5 @@
     <string name="et_hint_company_name">company name</string>
     <string name="et_hint_price">US $ price</string>
     <string name="btn_insert">INSERT</string>
-    <string name="btn_read">READ</string>
+    <string name="btn_delete">DELETE</string>
 </resources>

@@ -50,17 +50,17 @@
             android:text="@string/btn_insert"/>
 
         <Button
-            android:id="@+id/btn_read"
+            android:id="@+id/btn_delete"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
             android:layout_margin="10dp"
-            android:text="@string/btn_read"/>
+            android:text="@string/btn_delete"/>
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/tv_show"
+    <ListView
+        android:id="@+id/lv_show"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="10dp"
