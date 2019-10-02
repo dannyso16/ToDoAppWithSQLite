@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
                 cursor, from, to, 0);
 
         lvShow.setAdapter(adapter);
+
         // listener
         lvShow.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -67,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
                 String s2 = tv2.getText().toString();
                 Toast.makeText(MainActivity.this,
                         "country : " + s1 + "\nstockprice : " + s2,
-                        Toast.LENGTH_LONG).show();
+                        Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -89,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Toast.makeText(MainActivity.this,
                         "Selected Todo is deleted.",
-                        Toast.LENGTH_LONG).show();
+                        Toast.LENGTH_SHORT).show();
 
                 return true;
             }
@@ -106,10 +107,9 @@ public class MainActivity extends AppCompatActivity {
 
             String key = etCompany.getText().toString();
             String value = etPrice.getText().toString();
+            insertData(db, key, value);
 
-            insertData(db, key, Integer.valueOf(value));
             // 更新
-
             Cursor cursor = db.rawQuery("SELECT * FROM testdb", null);
             adapter.changeCursor(cursor);
             adapter.notifyDataSetChanged();
@@ -120,24 +120,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void insertData(SQLiteDatabase db, String company, int price) {
-        ContentValues values = new ContentValues();
-        values.put("company", company);
-        values.put("stockprice", price);
-
-        db.insert("testdb", null, values);
+    private void insertData(SQLiteDatabase db, String company, String price) {
+        db.execSQL("INSERT INTO testdb (company, stockprice) VALUES (?, ?);",
+                new String[]{company, price});
     }
 
     private void deleteData(String company, String stockprice) {
-        // DatabaseHelper2 helper = new DatabaseHelper2(getApplicationContext());
         SQLiteDatabase db = helper.getWritableDatabase();
-//        Cursor cursor = db.rawQuery("SELECT * FROM testdb", null);
 
         try {
-
-            db.execSQL("delete from testdb " +
-                       "where company='" + company + "' AND " +
-                       "stockprice=" + stockprice);
+            db.execSQL("DELETE FROM testdb WHERE company=? AND stockprice=?;",
+                    new String[]{company, stockprice});
             Log.d("debug", "deleteData() is called");
             Log.d("debug", "name=" + company);
         }
