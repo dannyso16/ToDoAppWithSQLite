@@ -29,24 +29,45 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // view の取得
         etCompany = findViewById(R.id.et_company);
         etPrice = findViewById(R.id.et_price);
         ListView lvShow = findViewById(R.id.lv_show);
 
         // set button listener
         Button insertBtn = findViewById(R.id.btn_insert);
-        insertBtn.setOnClickListener(new ButtonListener());
+        insertBtn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+
+                SQLiteDatabase db = helper.getWritableDatabase();
+
+                String key = etCompany.getText().toString();
+                String value = etPrice.getText().toString();
+                insertData(db, key, value);
+
+                // 更新
+                Cursor cursor = db.rawQuery("SELECT * FROM testdb", null);
+                adapter.changeCursor(cursor);
+                adapter.notifyDataSetChanged();
+
+                // 空欄に戻す
+                etCompany.setText("");
+                etPrice.setText("");
+                Log.d("debug", "INSERT btn is onCllck()");
+            }
+        });
 
         // load db
         helper = new DatabaseHelper2(MainActivity.this);
         SQLiteDatabase db = helper.getWritableDatabase();
-
-        // select
         Cursor cursor = db.rawQuery("SELECT * FROM testdb", null);
-        Log.d("debug", "db -- # of columns " + cursor.getColumnCount());
-        Log.d("debug", "db -- # of raws " + cursor.getCount());
 
-        // adapter用準備
+        Log.d("debug", "db init # of columns " + cursor.getColumnCount());
+        Log.d("debug", "db init # of rows " + cursor.getCount());
+
+
+        // adapter作成してListviewに適用
         String[] from = {"company", "stockprice"};
         int[] to = {android.R.id.text1, android.R.id.text2};
 
@@ -56,7 +77,12 @@ public class MainActivity extends AppCompatActivity {
 
         lvShow.setAdapter(adapter);
 
-        // listener
+
+        /*
+        ListView のリスナ
+            * short tap でインフォ
+            * long tap で削除
+         */
         lvShow.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -96,29 +122,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-
-    private class ButtonListener implements View.OnClickListener{
-
-        @Override
-        public void onClick(View view) {
-
-            SQLiteDatabase db = helper.getWritableDatabase();
-
-            String key = etCompany.getText().toString();
-            String value = etPrice.getText().toString();
-            insertData(db, key, value);
-
-            // 更新
-            Cursor cursor = db.rawQuery("SELECT * FROM testdb", null);
-            adapter.changeCursor(cursor);
-            adapter.notifyDataSetChanged();
-
-            etCompany.setText("");
-            etPrice.setText("");
-            Log.d("debug", "onCllck() is called");
-        }
-    }
+    
 
     private void insertData(SQLiteDatabase db, String company, String price) {
         db.execSQL("INSERT INTO testdb (company, stockprice) VALUES (?, ?);",
