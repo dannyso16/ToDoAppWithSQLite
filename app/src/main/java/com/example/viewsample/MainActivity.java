@@ -3,7 +3,6 @@ package com.example.viewsample;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
-import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -15,12 +14,17 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
-import android.widget.SimpleCursorAdapter;
-import android.widget.TextView;
+
 import android.widget.Toast;
 
 import java.util.ArrayList;
+
+// TODO: 2019/10/03 ListViewの上に[ToDoを追加]バーが欲しい --FKM
+// TODO: 2019/10/03 todoを押したときにdialogではなく新しい画面に遷移させる -- OGW
+// TODO: 2019/10/03 [完了済みtodoを表示] ＆ deleteData() の改修 -- OGW 
+// TODO: 2019/10/03 star時の処理 -- OGW 
+// TODO: 2019/10/03 （オプションメニューの作成）
+// TODO: 2019/10/03 （mipmap icon 作成）
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,7 +44,9 @@ public class MainActivity extends AppCompatActivity {
         etDetail = findViewById(R.id.et_detail);
         ListView lvShow = findViewById(R.id.lv_show);
 
-        // set button listener
+        /*
+         * set button listener
+         */
         Button testBtn = findViewById(R.id.btn_test);
         testBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,27 +66,29 @@ public class MainActivity extends AppCompatActivity {
                 String name = etName.getText().toString();
                 String detail = etDetail.getText().toString();
 
-                // 空欄がある場合，再入力を促す
+                // nameが空欄の場合，再入力を促す
                 if (name.isEmpty()) {
                     Toast.makeText(getApplicationContext(),
-                            "EditText is EMPTY !!", Toast.LENGTH_SHORT).show();
+                            "ToDo の名前が未入力だーよ！", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                // 更新
+                // リストに追加
                 ToDoItem item = new ToDoItem();
                 item.setName(name);
                 item.setDetail(detail);
                 insertData(item);
 
-                // 空欄に戻す
+                // EditTextを空欄に戻す
                 etName.setText("");
                 etDetail.setText("");
                 Log.d("listener", "INSERT btn is onCllck()");
             }
         });
 
-        // load db
+        /*
+         * DBを読んで，toDoList に書き込む
+         */
         helper = new DatabaseHelper2(MainActivity.this);
         SQLiteDatabase db = helper.getWritableDatabase();
         try {
@@ -100,9 +108,7 @@ public class MainActivity extends AppCompatActivity {
             db.close();
         }
 
-
-
-        // adapter作成してListviewに適用
+        // adapter作成して Listview に適用
         adapter = new ToDoAdapter(MainActivity.this);
         adapter.setToDoList(toDoList);
         lvShow.setAdapter(adapter);
@@ -122,10 +128,11 @@ public class MainActivity extends AppCompatActivity {
 
                 switch (view.getId()) {
                     case R.id.cb_done_in_lv:
+                        // TODO: 2019/10/03 □ → ☑ になるアニメーションの後に消える -- FKM
                         deleteData(item, i);
                         break;
                     case R.id.cb_star_in_lv:
-                        // TODO: 2019/10/03 starを付けた時の処理をかく
+                        // TODO: 2019/10/03 starを付けた時の処理をかく -- OGW
                         break;
 
                     default:
@@ -133,10 +140,6 @@ public class MainActivity extends AppCompatActivity {
                         // タップしたアイテムの取得
                         Log.d("debug", "Tap: " + i);
 
-//                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-//                        builder.setTitle("Tap No. " + i);
-//                        builder.setMessage(item.getName());
-//                        builder.show();
                         new AlertDialog.Builder(MainActivity.this)
                                 .setTitle(item.getName())
                                 .setMessage(item.getDetail())
@@ -164,8 +167,13 @@ public class MainActivity extends AppCompatActivity {
     }
     
 
-
+    /*
+     * 以下DB関係のメソッド
+     */
     private void insertData(ToDoItem item) {
+        /*
+         * DBへの書き込み + リストビューへの追加
+         */
         String name = item.getName();
         String detail = item.getDetail();
         toDoList.add(item);
@@ -185,6 +193,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void deleteData(ToDoItem item, int index) {
+        /*
+         * DB から削除　＋　リストビューから削除　　
+         */
         String name = item.getName();
         String detail = item.getDetail();
         toDoList.remove(index);
