@@ -10,6 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.lang.reflect.Array;
@@ -17,9 +18,9 @@ import java.util.ArrayList;
 
 public class ToDoAdapter extends BaseAdapter {
 
-    Context context;
-    LayoutInflater layoutInflater = null;
-    ArrayList<ToDoItem> toDoList;
+    private Context context;
+    private LayoutInflater layoutInflater = null;
+    private ArrayList<ToDoItem> toDoList;
 
     public ToDoAdapter(Context context) {
         this.context = context;
@@ -47,7 +48,7 @@ public class ToDoAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, final ViewGroup parent) {
         convertView = layoutInflater.inflate(
                 R.layout.checkbox_tv_star, parent, false);
 
@@ -63,6 +64,7 @@ public class ToDoAdapter extends BaseAdapter {
                 // チェック状態が変更された時の処理を記述
                 if (cbDone.isChecked()) {
                     Log.d("listener", "CheckBox(Done) is checked");
+                    ((ListView) parent).performItemClick(cbDone, position, R.id.cb_done_in_lv);
                 } else {
                     Log.d("listener", "CheckBox(Done) is Unchecked");
 

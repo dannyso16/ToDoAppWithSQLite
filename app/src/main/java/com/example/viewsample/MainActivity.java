@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseHelper2 helper;
     private SimpleCursorAdapter adapter;
     private ArrayList<ToDoItem> toDoList;
+    // TODO: 2019/10/03 adapterをカスタムのものに置き換える 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +58,13 @@ public class MainActivity extends AppCompatActivity {
 
                 String key = etCompany.getText().toString();
                 String value = etPrice.getText().toString();
+
+                if (key.isEmpty() | value.isEmpty()) {
+                    Toast.makeText(getApplicationContext(),
+                            "EditText is EMPTY !!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 insertData(db, key, value);
 
                 // 更新
