@@ -62,9 +62,9 @@ public class ToDoAdapter extends BaseAdapter {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 // チェック状態が変更された時の処理を記述
                 if (cbDone.isChecked()) {
-                    Log.d("OnCheckedChanged", "CheckBox(Done) is checked");
+                    Log.d("listener", "CheckBox(Done) is checked");
                 } else {
-                    Log.d("OnCheckedChanged", "CheckBox(Done) is Unchecked");
+                    Log.d("listener", "CheckBox(Done) is Unchecked");
 
                 }
             }

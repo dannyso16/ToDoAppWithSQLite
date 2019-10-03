@@ -18,12 +18,15 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
     private EditText etCompany;
     private EditText etPrice;
     private DatabaseHelper2 helper;
     private SimpleCursorAdapter adapter;
+    private ArrayList<ToDoItem> toDoList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
