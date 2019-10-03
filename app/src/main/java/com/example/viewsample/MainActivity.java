@@ -3,6 +3,7 @@ package com.example.viewsample;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -35,6 +36,15 @@ public class MainActivity extends AppCompatActivity {
         ListView lvShow = findViewById(R.id.lv_show);
 
         // set button listener
+        Button testBtn = findViewById(R.id.btn_test);
+        testBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, TestActivity.class);
+                startActivity(intent);
+            }
+        });
+
         Button insertBtn = findViewById(R.id.btn_insert);
         insertBtn.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -88,9 +98,9 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Log.d("debug", "short clicked : id = " + i);
 
-                TextView tv1 = (TextView)view.findViewById(android.R.id.text1);
+                TextView tv1 = view.findViewById(android.R.id.text1);
                 String s1 = tv1.getText().toString();
-                TextView tv2 = (TextView)view.findViewById(android.R.id.text2);
+                TextView tv2 = view.findViewById(android.R.id.text2);
                 String s2 = tv2.getText().toString();
                 Toast.makeText(MainActivity.this,
                         "country : " + s1 + "\nstockprice : " + s2,
@@ -103,9 +113,9 @@ public class MainActivity extends AppCompatActivity {
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Log.d("debug", "Long clicked : _id = " + i);
 
-                TextView tv1 = (TextView)view.findViewById(android.R.id.text1);
+                TextView tv1 = view.findViewById(android.R.id.text1);
                 String s1 = tv1.getText().toString();
-                TextView tv2 = (TextView)view.findViewById(android.R.id.text2);
+                TextView tv2 = view.findViewById(android.R.id.text2);
                 String s2 = tv2.getText().toString();
                 deleteData(s1, s2);
 
