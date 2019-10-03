@@ -3,10 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:descendantFocusability="blocksDescendants">
 
     <CheckBox
-        android:id="@+id/cb_in_lv"
+        android:id="@+id/cb_done_in_lv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -21,14 +22,13 @@
         android:layout_gravity="center"
         android:textSize="23dp"/>
 
-    <RatingBar
-        android:id="@+id/rb_in_lv"
+    <CheckBox
+        android:id="@+id/cb_star_in_lv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:numStars="1"
-        android:rating="0"
-        android:stepSize="1"
+        android:layout_margin="5dp"
         />
+
 
 </LinearLayout>

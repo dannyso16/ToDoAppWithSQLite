@@ -2,7 +2,11 @@ package com.example.viewsample;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -36,6 +40,21 @@ public class TestActivity extends AppCompatActivity {
 
         lvTodo = findViewById(R.id.lv_test);
         lvTodo.setAdapter(adapter);
+
+        lvTodo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int i, long l) {
+                // タップしたアイテムの取得
+                Log.d("degug", "Tap: " + i);
+                ListView listView = (ListView)parent;
+                ToDoItem item = (ToDoItem) listView.getItemAtPosition(i);  // SampleListItemにキャスト
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(TestActivity.this);
+                builder.setTitle("Tap No. " + i);
+                builder.setMessage(item.getName());
+                builder.show();
+            }
+        });
 
     }
 }
