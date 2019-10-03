@@ -18,17 +18,24 @@ public class TestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
 
-        List<String> titles = new ArrayList<>();
-        titles.add("hello");
-        titles.add("world");
-        titles.add("android");
+        ArrayList<ToDoItem> list = new ArrayList<>();
+        ToDoItem item;
+        item = new ToDoItem();
+        item.setName("hello");
+        item.setDetail("hello hello");
+        list.add(item);
+
+        item = new ToDoItem();
+        item.setName("world");
+        item.setDetail("hello hello");
+        list.add(item);
 
         // todo: adapter を自作
+        ToDoAdapter adapter = new ToDoAdapter(TestActivity.this);
+        adapter.setToDoList(list);
 
-//        ArrayAdapter adapter = new ArrayAdapter<>(TestActivity.this,
-//                R.layout.checkbox_tv_star, titles);
-//        lvTodo = (ListView)findViewById(R.id.lv_test);
-//        lvTodo.setAdapter(adapter);
+        lvTodo = findViewById(R.id.lv_test);
+        lvTodo.setAdapter(adapter);
 
     }
 }
