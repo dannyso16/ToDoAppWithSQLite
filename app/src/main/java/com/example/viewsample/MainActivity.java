@@ -176,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
          */
         String name = item.getName();
         String detail = item.getDetail();
-        toDoList.add(item);
+        toDoList.add(0, item);
 
         SQLiteDatabase db = helper.getWritableDatabase();
         try {
