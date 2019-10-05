@@ -15,6 +15,7 @@ public class DatabaseHelper2 extends SQLiteOpenHelper {
     private static final String COLUMN_TITLE = "name";
     private static final String COLUMN_DETAIL = "detail";
     private static final String COLUMN_TIMESTAMP = "timestamp";
+    private static final String COLUMN_ISSTARRED = "isstarred";
 
     // SQL文
     private static final String SQL_CREATE_ENTRIES =
@@ -22,7 +23,8 @@ public class DatabaseHelper2 extends SQLiteOpenHelper {
                     _ID + " INTEGER PRIMARY KEY, " +
                     COLUMN_TITLE + " TEXT, " +
                     COLUMN_DETAIL + " TEXT, " +
-                    COLUMN_TIMESTAMP + " TEXT)";
+                    COLUMN_TIMESTAMP + " TEXT, " +
+                    COLUMN_ISSTARRED + " INTEGER)";
 
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + TABLE_NAME;

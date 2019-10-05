@@ -5,14 +5,13 @@ public class ToDoItem {
     private String name;
     private String detail;
     private String timeStamp;
+    private String isStarred;
 
 
     /*
      * getter と setter
      */
-    public long getId() {
-        return id;
-    }
+    public long getId() { return id; }
 
     public void setId(long id) {
         this.id = id;
@@ -37,4 +36,9 @@ public class ToDoItem {
     public  String getTimeStamp() { return timeStamp; }
 
     public void setTimeStamp(String timeStamp) { this.timeStamp = timeStamp; }
+
+    public String getIsStarred() { return isStarred; }
+
+    // true: "1", false: "0"
+    public void setIsStarred(String isStarred) { this.isStarred = isStarred; }
 }
