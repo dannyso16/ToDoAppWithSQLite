@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.DebugUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -17,6 +18,8 @@ import android.widget.ListView;
 
 import android.widget.Toast;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 // TODO: 2019/10/03 ListViewの上に[ToDoを追加]バーが欲しい --FKM
@@ -65,6 +68,9 @@ public class MainActivity extends AppCompatActivity {
 
                 String name = etName.getText().toString();
                 String detail = etDetail.getText().toString();
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+                String timeStamp = sdf.format(new Timestamp(System.currentTimeMillis()));
+                Log.d("debug", "Get timestamp is OK: " + timeStamp);
 
                 // nameが空欄の場合，再入力を促す
                 if (name.isEmpty()) {
@@ -77,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
                 ToDoItem item = new ToDoItem();
                 item.setName(name);
                 item.setDetail(detail);
+                item.setTimeStamp(timeStamp);
                 insertData(item);
 
                 // EditTextを空欄に戻す
@@ -142,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
 
                         new AlertDialog.Builder(MainActivity.this)
                                 .setTitle(item.getName())
-                                .setMessage(item.getDetail())
+                                .setMessage(item.getDetail() + "\n" + item.getTimeStamp())
                                 .setPositiveButton("できたー", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
@@ -174,17 +181,20 @@ public class MainActivity extends AppCompatActivity {
         /*
          * DBへの書き込み + リストビューへの追加
          */
+        Log.d("debug", "insertData is called");
         String name = item.getName();
         String detail = item.getDetail();
+        String timeStamp = item.getTimeStamp();
+
         toDoList.add(0, item);
 
         SQLiteDatabase db = helper.getWritableDatabase();
         try {
-            db.execSQL("INSERT INTO testdb (name, detail) VALUES (?, ?);",
-                new String[]{name, detail});
+            db.execSQL("INSERT INTO testdb (name, detail, timestamp) VALUES (?, ?, ?);",
+                new String[]{name, detail, timeStamp});
             adapter.notifyDataSetChanged();
             Cursor cursor = db.rawQuery("SELECT * FROM testdb", null);
-            Log.d("debug", "insertData() is called");
+            Log.d("debug", "insertData() done correctly");
             Log.d("debug", "rows : " + cursor.getCount());
         }
         finally {
@@ -198,12 +208,13 @@ public class MainActivity extends AppCompatActivity {
          */
         String name = item.getName();
         String detail = item.getDetail();
+        String timeStamp = item.getTimeStamp();
         toDoList.remove(index);
         SQLiteDatabase db = helper.getWritableDatabase();
 
         try {
-            db.execSQL("DELETE FROM testdb WHERE name=? AND detail=?;",
-                    new String[]{name, detail});
+            db.execSQL("DELETE FROM testdb WHERE name=? AND detail=? AND timestamp=?;",
+                    new String[]{name, detail, timeStamp});
             adapter.notifyDataSetChanged();
 
             Cursor cursor = db.rawQuery("SELECT * FROM testdb", null);
