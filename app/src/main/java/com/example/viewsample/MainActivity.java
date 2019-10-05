@@ -13,14 +13,19 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import android.widget.Toast;
 
 import java.sql.Timestamp;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.zip.DataFormatException;
 
 // TODO: 2019/10/03 ListViewの上に[ToDoを追加]バーが欲しい --FKM
 // TODO: 2019/10/03 todoを押したときにdialogではなく新しい画面に遷移させる -- OGW
@@ -68,8 +73,9 @@ public class MainActivity extends AppCompatActivity {
 
                 String name = etName.getText().toString();
                 String detail = etDetail.getText().toString();
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-                String timeStamp = sdf.format(new Timestamp(System.currentTimeMillis()));
+                Date d = new Date();
+                String timeStamp = DateFormat.getDateTimeInstance(
+                        DateFormat.MEDIUM, DateFormat.MEDIUM).format(d);
                 Log.d("debug", "Get timestamp is OK: " + timeStamp);
 
                 // nameが空欄の場合，再入力を促す
@@ -84,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
                 item.setName(name);
                 item.setDetail(detail);
                 item.setTimeStamp(timeStamp);
+                item.setIsStarred("0"); // TODO: 2019/10/05 入力可能にする
                 insertData(item);
 
                 // EditTextを空欄に戻す
@@ -109,7 +116,15 @@ public class MainActivity extends AppCompatActivity {
                 item.setName(cursor.getString(idxName));
                 int idxDetail = cursor.getColumnIndex("detail");
                 item.setDetail(cursor.getString(idxDetail));
-                toDoList.add(item);
+                int idxIsStarred = cursor.getColumnIndex("isstarred");
+                String isStarred = cursor.getString((idxIsStarred));
+                item.setIsStarred(isStarred);
+                if (isStarred.equals(("1"))) {
+                    toDoList.add(0, item);
+                } else {
+                    toDoList.add(item);
+                }
+
             }
         } finally {
             db.close();
@@ -139,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
                         deleteData(item, i);
                         break;
                     case R.id.cb_star_in_lv:
-                        // TODO: 2019/10/03 starを付けた時の処理をかく -- OGW
+                        starredData(item, i);
                         break;
 
                     default:
@@ -155,7 +170,6 @@ public class MainActivity extends AppCompatActivity {
                                     public void onClick(DialogInterface dialog, int which) {
                                         Log.d("debug", "完了 is clicked");
                                         deleteData(item, i);
-
                                     }
                                 })
                                 .setNegativeButton("まだー", new DialogInterface.OnClickListener() {
@@ -185,13 +199,14 @@ public class MainActivity extends AppCompatActivity {
         String name = item.getName();
         String detail = item.getDetail();
         String timeStamp = item.getTimeStamp();
+        String isStarred = item.getIsStarred();
 
         toDoList.add(0, item);
 
         SQLiteDatabase db = helper.getWritableDatabase();
         try {
-            db.execSQL("INSERT INTO testdb (name, detail, timestamp) VALUES (?, ?, ?);",
-                new String[]{name, detail, timeStamp});
+            db.execSQL("INSERT INTO testdb (name, detail, timestamp, isstarred) VALUES (?, ?, ?, ?);",
+                new String[]{name, detail, timeStamp, isStarred});
             adapter.notifyDataSetChanged();
             Cursor cursor = db.rawQuery("SELECT * FROM testdb", null);
             Log.d("debug", "insertData() done correctly");
@@ -218,9 +233,27 @@ public class MainActivity extends AppCompatActivity {
             adapter.notifyDataSetChanged();
 
             Cursor cursor = db.rawQuery("SELECT * FROM testdb", null);
-            Log.d("debug", "delteeData() is called");
+            Log.d("debug", "deleteData() is called");
             Log.d("debug", "rows : " + cursor.getCount());
 
+        }
+        finally {
+            db.close();
+        }
+    }
+
+    private void starredData(ToDoItem item, int index) {
+        /*
+         * DBへの書き込み + リストビューへの追加
+         */
+        Log.d("debug", "starredData is called: idx = " + index);
+        toDoList.remove(index);
+        toDoList.add(0, item);
+        adapter.notifyDataSetChanged();
+
+        SQLiteDatabase db = helper.getWritableDatabase();
+        try {
+            // TODO: 2019/10/05 isstaredを更新
         }
         finally {
             db.close();
