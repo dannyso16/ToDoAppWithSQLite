@@ -28,13 +28,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
-            android:autofillHints="@string/et_hint_name"
             android:hint="@string/et_hint_name"
             android:inputType="text"
             android:textColor="#FFFFFF"
             android:textColorHighlight="#FFFFFF"
             android:textColorHint="#FFFFFF"
-            android:textColorLink="#F5FFFFFF" />
+            android:textColorLink="#F5FFFFFF"
+            />
 
     </LinearLayout>
 
