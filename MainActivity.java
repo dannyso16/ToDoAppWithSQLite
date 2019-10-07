@@ -3,19 +3,28 @@ package com.example.viewsample;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Paint;
 import android.os.Bundle;
+import android.text.TextPaint;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import android.widget.TextView;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -164,6 +173,45 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+        //文字入力後エンターキーが押された場合の挙動
+        //EditText(etName)にリスナを設定
+        etName.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                SQLiteDatabase db = helper.getWritableDatabase();
+
+                String name = etName.getText().toString();
+                //String detail = etDetail.getText().toString();
+
+
+
+                InputMethodManager inputMethodManager=  (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                if((event.getAction()==KeyEvent.ACTION_DOWN)&&(keyCode==KeyEvent.KEYCODE_ENTER)){
+                    // nameが空欄の場合，再入力を促す
+                    if (name.isEmpty()) {
+                        Toast.makeText(getApplicationContext(),
+                                "ToDo の名前が未入力だーよ！", Toast.LENGTH_SHORT).show();
+                        return false;
+                    }
+
+                    // リストに追加
+                    ToDoItem item = new ToDoItem();
+                    item.setName(name);
+                    //item.setDetail(detail);
+                    insertData(item);
+
+                    // EditTextを空欄に戻す
+                    etName.setText("");
+                    //etDetail.setText("");
+                    Log.d("listener", "Enter key is onKey()");
+
+//                    //キーボードを閉じる
+//                    inputMethodManager.hideSoftInputFromWindow(etName.getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
 
@@ -176,6 +224,12 @@ public class MainActivity extends AppCompatActivity {
          */
         String name = item.getName();
         String detail = item.getDetail();
+        //detailに""をセット()
+        if(detail == null){
+            item.setDetail("null");
+            detail = item.getDetail();
+        }
+
         toDoList.add(0, item);
 
         SQLiteDatabase db = helper.getWritableDatabase();
@@ -185,6 +239,7 @@ public class MainActivity extends AppCompatActivity {
             adapter.notifyDataSetChanged();
             Cursor cursor = db.rawQuery("SELECT * FROM testdb", null);
             Log.d("debug", "insertData() is called");
+            Log.d("debug", "name:"+name+", detail:"+detail);
             Log.d("debug", "rows : " + cursor.getCount());
         }
         finally {
@@ -198,6 +253,11 @@ public class MainActivity extends AppCompatActivity {
          */
         String name = item.getName();
         String detail = item.getDetail();
+        //detailに""をセット()
+        if(detail == null){
+            item.setDetail("null");
+            detail = item.getDetail();
+        }
         toDoList.remove(index);
         SQLiteDatabase db = helper.getWritableDatabase();
 
@@ -207,7 +267,8 @@ public class MainActivity extends AppCompatActivity {
             adapter.notifyDataSetChanged();
 
             Cursor cursor = db.rawQuery("SELECT * FROM testdb", null);
-            Log.d("debug", "delteeData() is called");
+            Log.d("debug", "deleteData() is called");
+            Log.d("debug", "name:"+name+", detail:"+detail);
             Log.d("debug", "rows : " + cursor.getCount());
 
         }
@@ -215,4 +276,6 @@ public class MainActivity extends AppCompatActivity {
             db.close();
         }
     }
+
+
 }
